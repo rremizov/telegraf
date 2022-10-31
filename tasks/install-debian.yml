@@ -13,9 +13,11 @@
   delay: 5
 
 - name: Import InfluxData GPG signing key [Debian/Ubuntu]
-  apt_key:
+  get_url:
     url: "{{ telegraf_influxdata_base_url }}/influxdb.key"
-    state: present
+    dest: /etc/apt/trusted.gpg.d/influxdb.asc
+    mode: "0644"
+    force: false
   when: telegraf_install_url is not defined or telegraf_install_url == None
 
 - name: Add InfluxData repository [Debian/Ubuntu]
