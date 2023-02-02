@@ -14,15 +14,13 @@
 
 - name: Import InfluxData GPG signing key [Debian/Ubuntu]
   get_url:
-    url: "{{ telegraf_influxdata_base_url }}/influxdb.key"
-    dest: /etc/apt/trusted.gpg.d/influxdb.asc
-    mode: "0644"
-    force: false
+    url: "{{ telegraf_influxdata_base_url }}/influxdata-archive_compat.key"
+    dest: /etc/apt/trusted.gpg.d/influxdata-archive_compat.asc
   when: telegraf_install_url is not defined or telegraf_install_url == None
 
 - name: Add InfluxData repository [Debian/Ubuntu]
   apt_repository:
-    repo: deb {{ telegraf_influxdata_base_url }}/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} {{ telegraf_install_version }}
+    repo: deb [signed-by=/etc/apt/trusted.gpg.d/influxdata-archive_compat.asc] {{ telegraf_influxdata_base_url }}/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} {{ telegraf_install_version }}
     state: present
   when: telegraf_install_url is not defined or telegraf_install_url == None
 
