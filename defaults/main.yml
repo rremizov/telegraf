@@ -60,7 +60,7 @@ telegraf_plugins_base:
       fielddrop:
         - "time_*"
   disk:
-    - mountpoints:
+    - mount_points:
         - "/"
   diskio:
     - skip_serial_number: true
