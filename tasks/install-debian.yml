@@ -12,15 +12,21 @@
   retries: 2
   delay: 5
 
-- name: Import InfluxData GPG signing key [Debian/Ubuntu]
+- name: Download InfluxData GPG signing key [Debian/Ubuntu]
   get_url:
-    url: "{{ telegraf_influxdata_base_url }}/influxdata-archive_compat.key"
-    dest: /etc/apt/trusted.gpg.d/influxdata-archive_compat.asc
+    url: "{{ telegraf_influxdata_base_url }}/influxdata-archive.key"
+    dest: /tmp/influxdata-archive.key
+  when: telegraf_install_url is not defined or telegraf_install_url == None
+
+- name: Dearmor and install InfluxData GPG signing key [Debian/Ubuntu]
+  shell: gpg --dearmor < /tmp/influxdata-archive.key > /etc/apt/trusted.gpg.d/influxdata-archive.gpg
+  args:
+    creates: /etc/apt/trusted.gpg.d/influxdata-archive.gpg
   when: telegraf_install_url is not defined or telegraf_install_url == None
 
 - name: Add InfluxData repository [Debian/Ubuntu]
   apt_repository:
-    repo: deb [signed-by=/etc/apt/trusted.gpg.d/influxdata-archive_compat.asc] {{ telegraf_influxdata_base_url }}/{{ ansible_distribution | lower }} stable main
+    repo: deb [signed-by=/etc/apt/trusted.gpg.d/influxdata-archive.gpg] {{ telegraf_influxdata_base_url }}/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} {{ telegraf_install_version }}
     state: present
   when: telegraf_install_url is not defined or telegraf_install_url == None
 
