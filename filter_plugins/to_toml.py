@@ -1,5 +1,6 @@
-import toml
 import json
+
+import toml
 
 
 class FilterModule(object):
